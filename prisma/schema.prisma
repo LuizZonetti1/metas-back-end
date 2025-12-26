@@ -1,0 +1,97 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+
+enum AuthProviderType {
+  LOCAL
+  GOOGLE
+}
+
+enum GoalFrequency {
+  DAILY
+  WEEKLY
+  MONTHLY
+  YEARLY
+}
+
+enum GoalStatus {
+  ACTIVE
+  ARCHIVED
+}
+
+enum GoalCompletionStatus {
+  COMPLETED
+  NOT_COMPLETED
+}
+
+
+model User {
+  id       String  @id @default(uuid())
+  name     String
+  email    String  @unique
+  password String? // null quando login social
+  isActive Boolean @default(true)
+
+  providers AuthProvider[]
+  goals     Goal[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+model AuthProvider {
+  id         String           @id @default(uuid())
+  provider   AuthProviderType
+  providerId String? // ID do Google, por exemplo
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@unique([provider, providerId])
+}
+
+
+model Goal {
+  id          String        @id @default(uuid())
+  title       String
+  description String?
+  frequency   GoalFrequency
+  status      GoalStatus    @default(ACTIVE)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  occurrences GoalOccurrence[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+model GoalOccurrence {
+id              String                  @id @default(uuid())
+date            DateTime
+status          GoalCompletionStatus
+
+goalId          String
+goal            Goal                    @relation(fields: [goalId], references: [id])
+
+createdAt       DateTime                @default(now())
+
+@@unique([goalId, date])
+}
