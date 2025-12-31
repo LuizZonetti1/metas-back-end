@@ -1,7 +1,22 @@
 import { prisma } from '../database/prisma';
 
-interface CreateUser {
-    name: string;
-    email: string;
-    password: string;
+export class UserRepository {
+    async findByEmail(email: string) {
+        const user = await prisma.user.findUnique({
+            where: {
+                email,
+            },
+        });
+        return user;
+    }
+
+    async create(data : {
+        name: string;
+        email: string;
+        password: string;
+    }) {
+        return prisma.user.create({
+            data,
+        });
+    }
 }
