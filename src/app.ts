@@ -1,9 +1,20 @@
 import express from "express";
 import routes from "./routes";
+import "express-async-errors";
+import "dotenv/config";
+import cors from "cors";
 
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 app.use(routes);
 
-export default app
+app.use((err: Error, req: any, res: any, next: any) => {
+	console.log(err);
+	res.status(400).json({
+		message: err.message || "Erro inesperado.",
+	});
+});
+
+export default app;
