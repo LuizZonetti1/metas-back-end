@@ -41,7 +41,7 @@ model User {
   id       String  @id @default(uuid())
   name     String
   email    String  @unique
-  password String? // null quando login social
+  password String 
   isActive Boolean @default(true)
 
   providers AuthProvider[]
@@ -55,7 +55,7 @@ model User {
 model AuthProvider {
   id         String           @id @default(uuid())
   provider   AuthProviderType
-  providerId String? // ID do Google, por exemplo
+  providerId String? // ID do Google
 
   userId String
   user   User   @relation(fields: [userId], references: [id])

@@ -13,5 +13,6 @@ routes.get("/health", (req, res) => {
 });
 
 routes.post("/users/create", userController.create);
+routes.post("/users/auth", userController.auth);
 
 export default routes;
