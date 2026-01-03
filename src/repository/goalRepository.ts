@@ -8,9 +8,16 @@ interface CreateGoal {
     status: GoalStatus;
     userId: string;
 }
+
+
+interface FindGoalsByUserAndDateRangeDTO {
+    userId: string;
+    startDate: Date;
+    endDate: Date;
+}
 export class GoalRepository {
-    
-    async create (data: CreateGoal) {
+
+    async create(data: CreateGoal) {
         return prisma.goal.create({
             data: {
                 title: data.title,
@@ -20,7 +27,7 @@ export class GoalRepository {
                 userId: data.userId,
             },
         });
-    } 
+    }
     async findByIdAndUserId(goalId: string, userId: string) {
         return prisma.goal.findFirst({
             where: {
@@ -30,4 +37,25 @@ export class GoalRepository {
         });
     }
 
+    async findByUserAndDateRange({ userId, startDate, endDate }: FindGoalsByUserAndDateRangeDTO) {
+        return prisma.goal.findMany({
+            where: {
+                userId,
+            },
+            include: {
+                occurrences: {
+                    where: {
+                        date: {
+                            gte: startDate,
+                            lte: endDate,
+                        },
+                    },
+                    orderBy: {
+                        date: "asc",
+                    },
+                },
+            },
+        });
+
+    }
 }

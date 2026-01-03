@@ -3,6 +3,7 @@ import * as yup from "yup";
 import { CreateGoalService } from "../services/createGoalService";
 import { GoalFrequency } from "../generated/prisma/enums";
 import { GetGoalService } from "../services/getGoalService";
+import { ListGoalsService } from "../services/listGoalService";
 
 export class GoalController {
 
@@ -34,14 +35,41 @@ export class GoalController {
     }
 
     async get(req: Request, res: Response) {
-        const goalId = req.params.id;
+
+        try {
+            const { id } = req.params;
+            const userId = req.userId;
+
+            const getGoalService = new GetGoalService();
+
+            const goal = await getGoalService.execute({ goalId: id, userId });
+
+            return res.status(200).json(goal);
+        } catch (error) {
+            return res.status(400).json({ message: "Erro ao buscar meta", error: error });
+        }
+    }
+
+    async list(req: Request, res: Response) {
+        try{
+        const { start, end } = req.query;
         const userId = req.userId;
 
-        const getGoalService = new GetGoalService();
+        const startDate = start ? new Date(String(start)) : new Date();
+        const endDate = end ? new Date(String(end)) : new Date();
 
-        const goal = await getGoalService.execute({ goalId, userId });
+        const listGoalsService = new ListGoalsService();
 
-        return res.status(200).json(goal);
-    }
+        const goals = await listGoalsService.execute({ 
+            userId, 
+            startDate, 
+            endDate, 
+        });
+
+        return res.status(200).json(goals);
+    } catch (error: any) {
+       return res.status(400).json({ message: error.message });
+        }
+    }   
 
 }
