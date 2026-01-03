@@ -1,0 +1,25 @@
+import { prisma } from "../database/prisma";
+import { GoalFrequency, GoalStatus } from '../generated/prisma/enums';
+
+interface CreateGoal {
+    title: string;
+    description: string;
+    frequency: GoalFrequency;
+    status: GoalStatus;
+    userId: string;
+}
+export class GoalRepository {
+    
+    async create (data: CreateGoal) {
+        return prisma.goal.create({
+            data: {
+                title: data.title,
+                description: data.description,
+                frequency: data.frequency,
+                status: data.status,
+                userId: data.userId,
+            },
+        });
+    } 
+
+}
