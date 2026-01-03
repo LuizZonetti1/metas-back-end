@@ -1,8 +1,12 @@
 import { Router } from "express";
 import { UserController } from "../controller/userController";
+import { GoalController } from "../controller/goalController";
+import { authMiddleware } from "../middlewares/auth";
 
 const routes = Router();
 const userController = new UserController();
+const goalController = new GoalController();
+
 
 routes.get("/health", (req, res) => {
   res.status(200).json({
@@ -14,5 +18,8 @@ routes.get("/health", (req, res) => {
 
 routes.post("/users/create", userController.create);
 routes.post("/users/auth", userController.auth);
+
+
+routes.post("/goals/create", authMiddleware, goalController.create);
 
 export default routes;
