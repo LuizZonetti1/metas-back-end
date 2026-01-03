@@ -19,7 +19,7 @@ routes.get("/health", (req, res) => {
 routes.post("/users/create", userController.create);
 routes.post("/users/auth", userController.auth);
 
-
+routes.get("/goals/:id", authMiddleware, goalController.get);
 routes.post("/goals/create", authMiddleware, goalController.create);
 
 export default routes;

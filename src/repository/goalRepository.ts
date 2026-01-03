@@ -21,5 +21,13 @@ export class GoalRepository {
             },
         });
     } 
+    async findByIdAndUserId(goalId: string, userId: string) {
+        return prisma.goal.findFirst({
+            where: {
+                id: goalId,
+                userId: userId,
+            },
+        });
+    }
 
 }

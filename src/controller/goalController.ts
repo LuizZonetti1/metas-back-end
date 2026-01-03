@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import * as yup from "yup";
 import { CreateGoalService } from "../services/createGoalService";
 import { GoalFrequency } from "../generated/prisma/enums";
+import { GetGoalService } from "../services/getGoalService";
 
 export class GoalController {
 
@@ -32,6 +33,15 @@ export class GoalController {
         }
     }
 
-    
+    async get(req: Request, res: Response) {
+        const goalId = req.params.id;
+        const userId = req.userId;
+
+        const getGoalService = new GetGoalService();
+
+        const goal = await getGoalService.execute({ goalId, userId });
+
+        return res.status(200).json(goal);
+    }
 
 }
