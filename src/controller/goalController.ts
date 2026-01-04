@@ -4,6 +4,7 @@ import { CreateGoalService } from "../services/createGoalService";
 import { GoalFrequency } from "../generated/prisma/enums";
 import { GetGoalService } from "../services/getGoalService";
 import { ListGoalsService } from "../services/listGoalService";
+import { CompleteGoalOccurrenceService } from "../services/CompleteGoalOccurrenceService";
 
 export class GoalController {
 
@@ -71,5 +72,22 @@ export class GoalController {
        return res.status(400).json({ message: error.message });
         }
     }   
+
+    async completeOccurrence(req: Request, res: Response) {
+        try {
+            
+            const { id } = req.params;
+            const userId = req.userId;
+
+            const service = new CompleteGoalOccurrenceService();
+
+            const occurrence = await service.execute({ occurrenceId: id, userId });
+
+            return res.status(200).json(occurrence);
+
+        } catch (error: any) {
+            return res.status(400).json({ message: error.message });
+        }
+    }
 
 }

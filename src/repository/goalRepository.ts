@@ -1,6 +1,7 @@
 import { prisma } from "../database/prisma";
 import { GoalFrequency, GoalStatus } from '../generated/prisma/enums';
 
+
 interface CreateGoal {
     title: string;
     description: string;
@@ -43,19 +44,11 @@ export class GoalRepository {
                 userId,
             },
             include: {
-                occurrences: {
-                    where: {
-                        date: {
-                            gte: startDate,
-                            lte: endDate,
-                        },
-                    },
-                    orderBy: {
-                        date: "asc",
-                    },
-                },
+                occurrences: true,
             },
         });
 
     }
+
+    
 }

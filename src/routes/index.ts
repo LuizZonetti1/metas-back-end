@@ -22,5 +22,6 @@ routes.post("/users/auth", userController.auth);
 routes.get("/goals", authMiddleware, goalController.list);
 routes.get("/goals/:id", authMiddleware, goalController.get);
 routes.post("/goals/create", authMiddleware, goalController.create);
+routes.post("/goals/occurrences/:id/complete", authMiddleware, goalController.completeOccurrence);
 
 export default routes;
